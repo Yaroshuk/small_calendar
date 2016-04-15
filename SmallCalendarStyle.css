@@ -1,0 +1,19 @@
+.sCalendar {
+	border: solid 1px #000;
+	border-collapse: collapse;
+}
+
+.sCalendar td, .sCalendar th {
+	border: solid 1px #000;
+	padding: 3px;
+	text-align: center;
+}
+
+.sCalendar th {
+	background: #ccc;
+}
+
+.sCalendar .year, .sCalendar .month {
+	font-weight: bold;
+	text-align: center;
+}
