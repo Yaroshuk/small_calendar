@@ -1,19 +1,59 @@
-.sCalendar {
-	border: solid 1px #000;
+#simpleCalendar {
+	border: 2px solid #34495e;
+	text-align: center;
 	border-collapse: collapse;
+	font-family: sans-serif;
 }
 
-.sCalendar td, .sCalendar th {
-	border: solid 1px #000;
-	padding: 3px;
-	text-align: center;
+#simpleCalendar thead td {
+	background: #3498db;
+	color: #fff;
+	height: 30px;
+	width: 25px;
+	padding: 0;
 }
 
-.sCalendar th {
-	background: #ccc;
+#simpleCalendar>thead th {
+	background: #3498db;
+	color: #fff;
+	height: 30px;
+	width: 25px;
+	padding: 0;
 }
 
-.sCalendar .year, .sCalendar .month {
-	font-weight: bold;
-	text-align: center;
+#simpleCalendar .scArrLeft {
+	position: relative;
+	cursor: pointer;
+}
+
+#simpleCalendar .scArrLeft::after {
+	content: '';
+	position: absolute;
+	border: 7px solid transparent;
+	border-right: 7px solid #fff;
+	top: 10px;
+	left: 0;
+}
+
+#simpleCalendar .scArrRight {
+	position: relative;
+	cursor: pointer;
+}
+
+#simpleCalendar .scArrRight::after {
+	content: '';
+	position: absolute;
+	border: 7px solid transparent;
+	border-left: 7px solid #fff;
+	top: 10px;
+	right: 0;
+}
+
+#simpleCalendar tbody td {
+	width: 30px;
+	height: 30px;
+}
+
+#simpleCalendar tbody td:hover {
+	background: #bdc3c7;
 }

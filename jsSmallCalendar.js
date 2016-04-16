@@ -7,17 +7,26 @@ var Calendar = function(text) {
 		this._elem = elem;
 
 		this._createCalendar.bind(this)();
+		this._table.addEventListener("click", this._clickEvent.bind(this));
 	}
 
 	Init.prototype._createCalendar = function() {
-		var table = "<table class='sCalendar'><tr><td colspan='7' class='year'>"+this._year+"</td></tr><tr><td colspan='7' class='month'>"+this._getMonth(this._month)+"</td></tr>";
-			table += "<tr><th>ПН</th><th>ВТ</th><th>СР</th><th>ЧТ</th><th>ПТ</th><th>СБ</th><th>ВС</th></tr><tr>";
-		var startDay = this._getDay(this._date);
-		if (startDay > 0) {
-			for(var i = 0; i < startDay; i++) {
-				table += "<td></td>";
-			}
+
+		if (!this._table) {
+			this._table = document.createElement("table");
+			this._table.id = "simpleCalendar";
+			this._elem.appendChild(this._table);
+			console.log("createTable");
 		}
+
+		var table = "<thead><tr><td class='scArrLeft scYearArrLeft'></td><td colspan='5' class='scYear'>"+this._year+"</td><td class='scArrRight scYearArrRight'></td></tr><tr><td class='scArrLeft scMonthArrLeft'></td><td colspan='5' class='scMonth'>"+this._getMonth(this._month)+"</td><td class='scArrRight scMonthArrRight'></td></tr><tr><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th><th>Su</th></tr><tr></thead>";
+			table += "<tbody>";
+
+		var startDay = this._getDay(this._date);
+
+		if (startDay > 0) {
+				table += "<th colspan="+startDay+"></th>";
+			}
 
 		console.log(this._date.getMonth());
 		console.log(this._month);
@@ -35,14 +44,31 @@ var Calendar = function(text) {
 		this._date.setDate(this._date.getDate() - 1);
 
 		if (this._getDay(this._date) < 6) {
-			for (var i = this._getDay(this._date), max = 6; i < max; i++) {
-				table += "<td></td>";
-			}
+			table += "<th colspan="+(6 - this._getDay(this._date))+"></th>";
 		}
 
-		table += "</tr></table>";
+		table += "</tr></tbody></table>";
 
-		this._elem.innerHTML = table;
+		this._table.innerHTML = table;
+
+	};
+
+	Init.prototype._clickEvent = function(e) {
+		var target = e.target;
+
+		console.log(target);
+
+		if (target.classList.contains("yearArrLeft")) {
+			this._year--;
+			this._date = new Date(this._year, this._month - 1);
+			this._createCalendar();
+		}
+
+		if (target.classList.contains("yearArrRight")) {
+			this._year++;
+			this._date = new Date(this._year, this._month - 1);
+			this._createCalendar();
+		}
 	};
 
 	Init.prototype._getMonth = function(month) {
