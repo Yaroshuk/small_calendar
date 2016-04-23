@@ -1,4 +1,4 @@
-var Calendar = function(text) {
+var Calendar = function() {
 
 	Date.prototype.getFullDay = function() {
 		return 33 - new Date(this.getFullYear(), this.getMonth(), 33).getDate();
@@ -6,16 +6,16 @@ var Calendar = function(text) {
 
 	function Init(year, month, elem) {
 		this._year = year;
-		this._month = month - 1;
+		this._month = month;
 		this._date = new Date(year, this._month);
 		this._elem = elem;
+		this._createCalendar = this._createCalendar.bind(this);
 
-		this._createCalendar.bind(this)();
+		this._createCalendar();
 		this._table.addEventListener("click", this._clickEvent.bind(this));
 	}
 
 	Init.prototype._createCalendar = function() {
-
 		if (!this._table) {
 			this._table = document.createElement("table");
 			this._table.id = "simpleCalendar";
@@ -32,10 +32,7 @@ var Calendar = function(text) {
 				table += "<th colspan="+startDay+"></th>";
 			}
 
-		console.log(this._date.getMonth());
-		console.log(this._month);
-
-		while(this._date.getMonth() !== this._month+1) {
+		while(this._date.getMonth() === this._month) {
 			table += "<td>"+this._date.getDate()+"</td>";
 
 			if (this._getDay(this._date) === 6 && this._date.getDate() !== this._date.getFullDay()) {
@@ -54,13 +51,10 @@ var Calendar = function(text) {
 		table += "</tr></tbody></table>";
 
 		this._table.innerHTML = table;
-		console.log(this._date.getFullDay());
 	};
 
 	Init.prototype._clickEvent = function(e) {
 		var target = e.target;
-
-		console.log(target);
 
 		if (target.closest("thead")) {
 			
@@ -68,11 +62,11 @@ var Calendar = function(text) {
 					
 				if (target.classList.contains("scArrLeft")) {
 
-					this._redrawCalendar(--this._year, this._month);
+					this._prevYear();
 
 				} else if (target.classList.contains("scArrRight")) {
 
-					this._redrawCalendar(++this._year, this._month);
+					this._nextYear();
 
 				}
 
@@ -80,11 +74,11 @@ var Calendar = function(text) {
 
 				if (target.classList.contains("scArrLeft")) {
 
-					console.log("month left");
+					this._prevMonth();
 
 				} else if (target.classList.contains("scArrRight")) {
 
-					console.log("month right");
+					this._nextMonth();
 
 				}				
 
@@ -96,9 +90,34 @@ var Calendar = function(text) {
 
 	};
 
-	Init.prototype._redrawCalendar = function(year, month) {
-		this._date = new Date(year, month);
+	Init.prototype._prevMonth = function() {
+		if (this._month > 0) this.setDate(this._year, this._month - 1);
+	};
+
+	Init.prototype._nextMonth = function() {
+		if (this._month < 11) this.setDate(this._year, this._month + 1);
+	};
+
+	Init.prototype._prevYear = function() {
+		this.setDate(--this._year, this._month);
+	};
+
+	Init.prototype._nextYear = function() {
+		this.setDate(++this._year, this._month);
+	};
+
+	Init.prototype._redrawCalendar = function() {
+		this._date = new Date(this._year, this._month);
 		this._createCalendar();
+	};
+
+	Init.prototype.setDate = function(year, month) {
+		console.log(this._month);
+		if (month < 0 || month > 11) return;
+		this._year = year;
+		this._month = month;
+		console.log(this._month);
+		this._redrawCalendar();
 	};
 
 	Init.prototype._getMonth = function(month) {
@@ -115,4 +134,4 @@ var Calendar = function(text) {
 
 	return Init;
 
-}("init");
+}();
