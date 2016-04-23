@@ -23,7 +23,7 @@ var Calendar = function() {
 			console.log("createTable");
 		}
 
-		var table = "<thead><tr><td class='scArrLeft scYearChange'></td><td colspan='5' class='scYear'>"+this._year+"</td><td class='scArrRight scYearChange'></td></tr><tr><td class='scArrLeft scMonthChange'></td><td colspan='5' class='scMonth'>"+this._getMonth(this._month)+"</td><td class='scArrRight scMonthChange'></td></tr><tr><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th><th>Su</th></tr><tr></thead>";
+		var table = "<thead><tr><td><div class='scArrLeft scYearChange'></div></td><td colspan='5' class='scYear'>"+this._year+"</td><td><div class='scArrRight scYearChange'></div></td></tr><tr><td><div class='scArrLeft scMonthChange'></div></td><td colspan='5' class='scMonth'>"+this._getMonth(this._month)+"</td><td><div class='scArrRight scMonthChange'></div></td></tr><tr><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th><th>Su</th></tr><tr></thead>";
 			table += "<tbody>";
 
 		var startDay = this._getDay(this._date);
@@ -109,6 +109,9 @@ var Calendar = function() {
 	Init.prototype._redrawCalendar = function() {
 		this._date = new Date(this._year, this._month);
 		this._createCalendar();
+
+		if (this._month === 0) this._table.querySelector(".scArrLeft.scMonthChange").classList.add("hidden");
+		if (this._month === 11) this._table.querySelector(".scArrRight.scMonthChange").classList.add("hidden");
 	};
 
 	Init.prototype.setDate = function(year, month) {

@@ -21,7 +21,13 @@
 	padding: 0;
 }
 
+#simpleCalendar .hidden {
+	display: none;
+}
+
 #simpleCalendar .scArrLeft {
+	width: 100%;
+	height: 100%;
 	position: relative;
 	cursor: pointer;
 }
@@ -31,11 +37,13 @@
 	position: absolute;
 	border: 7px solid transparent;
 	border-right: 7px solid #fff;
-	top: 10px;
+	top: 7px;
 	left: 0;
 }
 
 #simpleCalendar .scArrRight {
+	width: 100%;
+	height: 100%;
 	position: relative;
 	cursor: pointer;
 }
@@ -45,7 +53,7 @@
 	position: absolute;
 	border: 7px solid transparent;
 	border-left: 7px solid #fff;
-	top: 10px;
+	top: 7px;
 	right: 0;
 }
 
