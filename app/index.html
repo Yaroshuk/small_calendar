@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Calendar</title>
+	<link rel="stylesheet" type="text/css" href="css/SmallCalendarStyle.min.css">
+</head>
+<body>
+	<div id="cal"></div>
+	<script type="text/javascript" src="js/SmallCalendar.js"></script>
+	<script type="text/javascript">
+	var cal = new Calendar(2015, 1, document.getElementById("cal"));
+
+	document.getElementById("cal").addEventListener("selectDate", function(e) {
+		console.log(e.detail);
+	});
+	</script>
+</body>
+</html>
