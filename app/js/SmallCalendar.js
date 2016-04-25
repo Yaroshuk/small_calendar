@@ -4,12 +4,32 @@ var Calendar = function() {
 		return 33 - new Date(this.getFullYear(), this.getMonth(), 33).getDate();
 	};
 
-	function CustomDate(year, month, day) {
-		Date.apply(this, arguments);
-	}
+	Date.prototype.getNewMonth = function() {
+		var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-	CustomDate.prototype = Object.create(Date.prototype);
-	CustomDate.prototype.constructor = CustomDate;
+		return monthNames[this.getMonth()];
+	};
+
+	Date.prototype.getDayOfWeek = function() {
+		var dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+		return dayNames[this.getNewDay()];
+	};
+
+	Date.prototype.getNewDay = function() { //получение дня 0(понедельник) - 6 (воскресенье)
+		var d = this.getDay();
+		if (d === 0) d = 7;
+		return d - 1;
+	};
+
+	Date.prototype.getFormatDate = function() {
+		var day = this.getDate() < 10 ? "0" + this.getDate(): this.getDate(),
+			month = (this.getMonth() + 1) < 10 ? "0" + (this.getMonth() + 1) : this.getMonth() + 1;
+
+		return day + "-" + month + "-" + this.getFullYear();	  
+	};
+
+
 
 	function Init(year, month, elem) {
 		this._year = year;
@@ -30,10 +50,10 @@ var Calendar = function() {
 			console.log("createTable");
 		}
 
-		var table = "<thead><tr><td><div class='scArrLeft scYearChange'></div></td><td colspan='5' class='scYear'>"+this._year+"</td><td><div class='scArrRight scYearChange'></div></td></tr><tr><td><div class='scArrLeft scMonthChange'></div></td><td colspan='5' class='scMonth'>"+this._getMonth(this._month)+"</td><td><div class='scArrRight scMonthChange'></div></td></tr><tr><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th><th>Su</th></tr><tr></thead>";
+		var table = "<thead><tr><td><div class='scArrLeft scYearChange'></div></td><td colspan='5' class='scYear'>"+this._year+"</td><td><div class='scArrRight scYearChange'></div></td></tr><tr><td><div class='scArrLeft scMonthChange'></div></td><td colspan='5' class='scMonth'>"+this._date.getNewMonth()+"</td><td><div class='scArrRight scMonthChange'></div></td></tr><tr><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th><th>Su</th></tr><tr></thead>";
 			table += "<tbody>";
 
-		var startDay = this._getDay(this._date);
+		var startDay = this._date.getNewDay();
 
 		if (startDay > 0) {
 				table += "<th colspan="+startDay+"></th>";
@@ -42,7 +62,7 @@ var Calendar = function() {
 		while(this._date.getMonth() === this._month) {
 			table += "<td>"+this._date.getDate()+"</td>";
 
-			if (this._getDay(this._date) === 6 && this._date.getDate() !== this._date.getFullDay()) {
+			if (this._date.getNewDay() === 6 && this._date.getDate() !== this._date.getFullDay()) {
 				table += "</tr><tr>";
 			}
 
@@ -51,8 +71,8 @@ var Calendar = function() {
 
 		this._date.setDate(this._date.getDate() - 1);
 
-		if (this._getDay(this._date) < 6) {
-			table += "<th colspan="+(6 - this._getDay(this._date))+"></th>";
+		if (this._date.getNewDay() < 6) {
+			table += "<th colspan="+(6 - this._date.getNewDay())+"></th>";
 		}
 
 		table += "</tr></tbody></table>";
@@ -95,9 +115,7 @@ var Calendar = function() {
 			if (target.tagName !== "TD") return;
 
 			var eve = document.createEvent("CustomEvent");
-			eve.initCustomEvent("selectDate", true, true, {
-						formatDate: this._formatDate(+target.innerHTML, this._month, this._year),
-						});
+			eve.initCustomEvent("selectDate", true, true, new Date(this._year, this._month, +target.innerHTML));
 
 			this._elem.dispatchEvent(eve);
 		}
@@ -135,31 +153,6 @@ var Calendar = function() {
 		this._month = month;
 		console.log(this._month);
 		this._redrawCalendar();
-	};
-
-	Init.prototype._formatDate = function(day, month, year) {
-		var day = day < 10 ? "0" + day:day,
-			month = month + 1 < 10 ? "0" + ++month:++month;
-
-		return day + "-" + month + "-" + year;
-	};
-
-	Init.prototype._getMonth = function(month) {
-		var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-		return monthNames[month];
-	};
-
-	Init.prototype._getDayOfWeek = function(day) {
-		var dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
-		return dayNames[this._getDay(new Date(this._year, this._month, day))];
-	};
-
-	Init.prototype._getDay = function(date) { //получение дня 0(понедельник) - 6 (воскресенье)
-		var d = date.getDay();
-		if (d === 0) d = 7;
-		return d - 1;
 	};
 
 	return Init;
