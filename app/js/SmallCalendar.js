@@ -1,16 +1,16 @@
 var Calendar = function() {
 
-	Date.prototype.getFullDay = function() {
+	Date.prototype.getFullDay = function() { //возвращает количество дней в месяце 
 		return 33 - new Date(this.getFullYear(), this.getMonth(), 33).getDate();
 	};
 
-	Date.prototype.getNewMonth = function() {
+	Date.prototype.getNewMonth = function() { //возвращает название месяца
 		var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 		return monthNames[this.getMonth()];
 	};
 
-	Date.prototype.getDayOfWeek = function() {
+	Date.prototype.getDayOfWeek = function() { //возвращает название дня недели 
 		var dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 		return dayNames[this.getNewDay()];
@@ -22,7 +22,7 @@ var Calendar = function() {
 		return d - 1;
 	};
 
-	Date.prototype.getFormatDate = function() {
+	Date.prototype.getFormatDate = function() { //возвращение даты в формате строки
 		var day = this.getDate() < 10 ? "0" + this.getDate(): this.getDate(),
 			month = (this.getMonth() + 1) < 10 ? "0" + (this.getMonth() + 1) : this.getMonth() + 1;
 
@@ -35,10 +35,14 @@ var Calendar = function() {
 		this._year = year;
 		this._month = month;
 		this._date = new Date(year, this._month);
+		this._oldDate;
+		this._eventName;
 		this._elem = elem;
-		this._createCalendar = this._createCalendar.bind(this);
 
 		this._createCalendar();
+
+		if (this._month === 0) this._table.querySelector(".scArrLeft.scMonthChange").classList.add("hidden");
+		if (this._month === 11) this._table.querySelector(".scArrRight.scMonthChange").classList.add("hidden");
 		this._table.addEventListener("click", this._clickEvent.bind(this));
 	}
 
@@ -89,11 +93,11 @@ var Calendar = function() {
 					
 				if (target.classList.contains("scArrLeft")) {
 
-					this._prevYear();
+					this._changeYear("prev");
 
 				} else if (target.classList.contains("scArrRight")) {
 
-					this._nextYear();
+					this._changeYear("next");
 
 				}
 
@@ -101,11 +105,11 @@ var Calendar = function() {
 
 				if (target.classList.contains("scArrLeft")) {
 
-					this._prevMonth();
+					this._changeMonth("prev");
 
 				} else if (target.classList.contains("scArrRight")) {
 
-					this._nextMonth();
+					this._changeMonth("next");
 
 				}				
 
@@ -114,44 +118,60 @@ var Calendar = function() {
 		} else {
 			if (target.tagName !== "TD") return;
 
-			var eve = document.createEvent("CustomEvent");
-			eve.initCustomEvent("selectDate", true, true, new Date(this._year, this._month, +target.innerHTML));
-
+			var eve = document.createEvent("CustomEvent"); //генерация события "selectDate"
+			eve.initCustomEvent("selectDate", true, true, {
+				nowDate: new Date(this._year, this._month, +target.innerHTML)
+			});
 			this._elem.dispatchEvent(eve);
 		}
 
 	};
 
-	Init.prototype._prevMonth = function() {
-		if (this._month > 0) this.setDate(this._year, this._month - 1);
+	Init.prototype._changeMonth = function(dir) {
+		this._oldDate = this._date;
+		this._eventName = "changeMonth";
+
+		switch (dir) {
+			case "next": {
+				if (this._month < 11) this.setDate(this._year, this._month + 1);
+			} break;
+
+			case "prev": {
+				if (this._month > 0) this.setDate(this._year, this._month - 1);
+			}
+		}	
 	};
 
-	Init.prototype._nextMonth = function() {
-		if (this._month < 11) this.setDate(this._year, this._month + 1);
-	};
+	Init.prototype._changeYear = function(dir) {
+		this._oldDate = this._date;
+		this._eventName = "changeYear";
 
-	Init.prototype._prevYear = function() {
-		this.setDate(--this._year, this._month);
-	};
-
-	Init.prototype._nextYear = function() {
-		this.setDate(++this._year, this._month);
+		switch (dir) {
+			case "next": this.setDate(++this._year, this._month); break;
+			case "prev": this.setDate(--this._year, this._month);
+		}
 	};
 
 	Init.prototype._redrawCalendar = function() {
 		this._date = new Date(this._year, this._month);
 		this._createCalendar();
 
+		var eve = document.createEvent("CustomEvent");
+		eve.initCustomEvent(this._eventName, true, true, {
+			nowDate: new Date(this._year, this._month),
+			oldDate: new Date(this._oldDate.getFullYear(), this._oldDate.getMonth())
+		});
+
+		this._elem.dispatchEvent(eve);
+
 		if (this._month === 0) this._table.querySelector(".scArrLeft.scMonthChange").classList.add("hidden");
 		if (this._month === 11) this._table.querySelector(".scArrRight.scMonthChange").classList.add("hidden");
 	};
 
 	Init.prototype.setDate = function(year, month) {
-		console.log(this._month);
 		if (month < 0 || month > 11) return;
 		this._year = year;
 		this._month = month;
-		console.log(this._month);
 		this._redrawCalendar();
 	};
 
