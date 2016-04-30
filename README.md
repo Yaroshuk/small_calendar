@@ -46,6 +46,6 @@
         * **yyyy** - 2015
 
 
-    document.getElementById("cal").addEventListener("selectDate", function(e) {
+	document.getElementById("cal").addEventListener("selectDate", function(e) {
 		console.log(e.detail.nowDate.getFormatDate("ddd:mm:yy")); //Fri:01:15
 	});
