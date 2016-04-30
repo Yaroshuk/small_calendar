@@ -22,11 +22,35 @@ var Calendar = function() {
 		return d - 1;
 	};
 
-	Date.prototype.getFormatDate = function() { //возвращение даты в формате строки
-		var day = this.getDate() < 10 ? "0" + this.getDate(): this.getDate(),
-			month = (this.getMonth() + 1) < 10 ? "0" + (this.getMonth() + 1) : this.getMonth() + 1;
+	Date.prototype.getFormatDate = function(form) { //возвращение даты в формате строки
+		var str;
 
-		return day + "-" + month + "-" + this.getFullYear();	  
+		if (form) {
+			str = form.replace(/[dmy]+/g, function(){
+				var str;
+
+				switch (arguments[0]) {
+					case "dd": str = this.getDate() < 10 ? "0" + this.getDate(): this.getDate(); break;
+					case "ddd": str = ("" + this.getDayOfWeek()).slice(0, 3); break;
+					case "dddd": str = this.getDayOfWeek(); break;
+					case "mm": str = month = (this.getMonth() + 1) < 10 ? "0" + (this.getMonth() + 1) : this.getMonth() + 1; break;
+					case "mmm": str = ("" + this.getNewMonth()).slice(0, 3); break;
+					case "mmmm": str = this.getNewMonth(); break;					
+					case "yy": str = ("" + this.getFullYear()).slice(2); break;
+					case "yyyy": str = this.getFullYear(); break;
+					default: str = "????";
+				}
+				return str;
+			}.bind(this));
+		}
+		else
+		{
+			var day = this.getDate() < 10 ? "0" + this.getDate(): this.getDate(),
+				month = (this.getMonth() + 1) < 10 ? "0" + (this.getMonth() + 1) : this.getMonth() + 1;
+
+			str = day + "-" + month + "-" + this.getFullYear();
+		}
+		return str;	  
 	};
 
 
