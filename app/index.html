@@ -12,7 +12,7 @@
 	var cal = new Calendar(2015, 0, document.getElementById("cal"));
 
 	document.getElementById("cal").addEventListener("selectDate", function(e) {
-		console.log(e.detail.nowDate.getFormatDate("[ddd][mmm][yy]"));
+		console.log(e.detail.nowDate.getFormatDate("ddd:mm:yy"));
 	});
 	</script>
 </body>
