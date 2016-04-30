@@ -44,7 +44,8 @@
         * **mmmm** - January
         * **yy** - 15
         * **yyyy** - 2015
-
+ 
+Пример использования: 
 
 	document.getElementById("cal").addEventListener("selectDate", function(e) {
 		console.log(e.detail.nowDate.getFormatDate("ddd:mm:yy")); //Fri:01:15
