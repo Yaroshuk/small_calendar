@@ -7,7 +7,7 @@
 ## Использование:
 
 ### Инициализация:
-    var calendar = new Calendar(year, month, id);
+    var calendar = new Calendar(year, month, document.getElementById(id));
 * year - год (например 2015)
 * month - месяц (от 0 до 11)
 * id - ид элемента который станет родителем календаря
